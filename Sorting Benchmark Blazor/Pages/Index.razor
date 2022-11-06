@@ -1,0 +1,331 @@
+﻿@page "/"
+@using System.Diagnostics
+
+
+<h1 style="width:100%; text-align:center;">Sorting Benchmark</h1>
+
+<div style="display:flex; flex-direction:row;width:fit-content;align-items:left;margin-left:auto; margin-right:auto;">
+    <div style="display:flex; flex-direction:column;padding:1rem;">
+
+        <h3 style="margin-left:auto;margin-right:auto;">Settings</h3>
+
+        <input @onchange="onCountChange"
+               value="1000" />
+        <button class="btn btn-primary" @onclick="SortBtn">Sort</button>
+
+    </div>
+    <div style="display:flex; flex-direction:column;padding:1rem;">
+        <h3 style="margin-left:auto;margin-right:auto;">Info</h3>
+        <p role="status">Current Array:</p>
+        <p>@arrayStr</p>
+        <div disabled="@isTimesDisabled">
+            <p>Times:</p>
+            @foreach (var key in times.Keys)
+            {
+                <p style="margin-left:10px;">@key : @times[key]</p>
+            }
+        </div>
+
+        <p>Log:</p>
+        <p>@logText</p>
+    </div>
+</div>
+
+@code {
+    /****************************
+         * Variables                *
+         ****************************/
+
+    private string logText = "";
+
+    private long currentCount = 0;
+
+    private long[] arr = { };
+
+    private long count = 1000;
+
+    private Dictionary<string, decimal> times = new Dictionary<string, decimal>();
+
+    /****************************
+     * Getters/Setters          *
+     ****************************/
+
+    private bool isTimesDisabled
+    {
+        get
+        {
+            return times.Count <= 0;
+        }
+    }
+
+    private string arrayStr
+    {
+        get
+        {
+            return String.Join(',', arr.Take(10).Select(x => x.ToString()).ToArray());
+        }
+    }
+
+    /****************************
+     * Bubble Sort              *
+     ****************************/
+
+    private long[] bubbleSort(long[] arr)
+    {
+        //Console.WriteLine(arr);
+        bool sorted = false;
+        long tmp, iter = 0;
+
+        while (!sorted)
+        {
+            sorted = true;
+
+            for (long i = 0; i < arr.Length - 1; i++)
+            {
+                // If next element is less than current element
+                if (arr[i] > arr[i + 1])
+                {
+                    tmp = arr[i];
+                    // swap
+                    arr[i] = arr[i + 1];
+                    arr[i + 1] = tmp;
+                    sorted = false;
+                }
+            }
+
+        }
+
+        return arr;
+    }
+
+    /****************************
+     * Radix Sort               *
+     ****************************/
+
+    public long getMaxValue(long[] arr)
+    {
+        long max = arr[0];
+
+        // Search arr for max value
+        for (long i = 1; i < arr.Length; i++)
+        {
+            if (arr[i] > max)
+            {
+                max = arr[i];
+            }
+        }
+
+        return max;
+
+    }
+
+    public long[] countSort(long[] arr, long exp)
+    {
+
+        long[] output = new long[arr.Length];
+        long[] count = new long[10];
+        long i;
+
+        // Initialize count array
+        for (i = 0; i < 10; i++)
+        {
+            count[i] = 0;
+        }
+
+        // count occurences into count array
+        for (i = 0; i < arr.Length; i++)
+        {
+            count[(arr[i] / exp) % 10]++; //Increment
+        }
+
+        // change count values to position of digit in output array
+        for (i = 1; i < 10; i++)
+        {
+            count[i] += count[i - 1];
+        }
+
+        // Build output array
+        for (i = arr.Length - 1; i >= 0; i--)
+        {
+            output[count[(arr[i] / exp) % 10] - 1] = arr[i];
+            count[(arr[i] / exp) % 10]--;
+        }
+
+        return output;
+    }
+
+    public long[] radixSort(long[] arr)
+    {
+        long max = getMaxValue(arr);
+
+        for (long exp = 1; max / exp > 0; exp *= 10)
+        {
+            arr = countSort(arr, exp);
+        }
+
+        return arr;
+    }
+
+    /****************************
+     * Bucket Sort              *
+     ****************************/
+
+    static long[] bucketSort(long[] arr)
+    {
+        long minValue = arr[0];
+        long maxValue = arr[0];
+
+        for (long i = 1; i < arr.Length; i++)
+        {
+            if (arr[i] > maxValue)
+                maxValue = arr[i];
+            if (arr[i] < minValue)
+                minValue = arr[i];
+        }
+
+        // Create buckets
+        List<long>[] bucket = new List<long>[maxValue - minValue + 1];
+
+        for (long i = 0; i < bucket.Length; i++)
+        {
+            bucket[i] = new List<long>();
+        }
+
+        // Fill each bucket based on
+        for (long i = 0; i < arr.Length; i++)
+        {
+            bucket[arr[i] - minValue].Add(arr[i]);
+        }
+
+
+        long k = 0;
+        for (long i = 0; i < bucket.Length; i++)
+        {
+            if (bucket[i].Count > 0)
+            {
+                for (long j = 0; j < bucket[i].Count; j++)
+                {
+                    arr[k] = bucket[i][(int)j];
+                    k++;
+                }
+            }
+
+            bucket[i].Clear();
+        }
+
+        return arr;
+    }
+
+
+    /****************************
+     * Helper Function          *
+     ****************************/
+
+    private short getDigit(long val, long k)
+    {
+        long digits = countDigits(val);
+        short output = (short)(val / Math.Pow(10, (digits - k)) % 10);
+        return output;
+
+    }
+
+    private long countDigits(long val)
+    {
+        long count = 0;
+
+        while (val > 0)
+        {
+            val = val / 10;
+            count++;
+        }
+
+        return count;
+    }
+
+
+    private bool isSorted(long[] arr)
+    {
+
+        for (long i = 0; i < arr.Length - 1; i++)
+        {
+            if (arr[i] > arr[i + 1])
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private long[] generateRandom(long size)
+    {
+        long[] arr = new long[size];
+
+        Random rand = new Random();
+
+        for (long i = 0; i < size; i++)
+        {
+            arr[i] = rand.Next((int)size);
+        }
+
+        return arr;
+    }
+
+    private void log(string message)
+    {
+        logText += message + "\n";
+    }
+
+    private void benchmark(long[] arr, string name, Func<long[], long[]> sortFunc)
+    {
+
+        Stopwatch st = new Stopwatch();
+
+        long[] tmpArr = (long[])arr.Clone();
+
+        // ** Radix Sort **
+
+        st.Start();
+        long[] rsArr = sortFunc(tmpArr);
+        st.Stop();
+
+        //log($"{name} Sorted: {isSorted(rsArr)} in {st.ElapsedMilliseconds} ms");
+
+        times[name] = st.ElapsedMilliseconds;
+
+        GC.Collect();
+
+    }
+
+    /****************************
+     * Actions                  *
+     ****************************/
+
+    private void onCountChange(ChangeEventArgs e)
+    {
+        try
+        {
+            count = long.Parse(e.Value.ToString());
+        }
+        catch (Exception exception) { }
+    }
+
+    private void SortBtn()
+    {
+
+        arr = generateRandom(count);
+
+        // ** Radix Sort **
+
+        benchmark(arr, "Radix Sort", radixSort);
+
+        // ** Bucket Sort **
+
+        benchmark(arr, "Bucket Sort", bucketSort);
+
+        // ** Bubble Sort **
+
+        benchmark(arr, "Bubble Sort", bubbleSort);
+
+    }
+}
