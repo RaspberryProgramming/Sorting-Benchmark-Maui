@@ -4,7 +4,9 @@ VisualStudioVersion = 17.0.31611.283
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sorting Benchmark Maui", "Sorting Benchmark Maui\Sorting Benchmark Maui.csproj", "{8682F981-5204-4308-B2A1-AF277363B638}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sorting Benchmark Blazor", "Sorting Benchmark Blazor\Sorting Benchmark Blazor.csproj", "{B103ABD5-CC50-4282-A159-0E16D497FF59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sorting Benchmark Blazor", "Sorting Benchmark Blazor\Sorting Benchmark Blazor.csproj", "{B103ABD5-CC50-4282-A159-0E16D497FF59}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sorting Benchmark CLI", "Sorting Benchmark CLI\Sorting Benchmark CLI.csproj", "{1AF4A260-6EB1-43D5-B1BC-CBA5D79C09D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,6 +24,10 @@ Global
 		{B103ABD5-CC50-4282-A159-0E16D497FF59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B103ABD5-CC50-4282-A159-0E16D497FF59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B103ABD5-CC50-4282-A159-0E16D497FF59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AF4A260-6EB1-43D5-B1BC-CBA5D79C09D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AF4A260-6EB1-43D5-B1BC-CBA5D79C09D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AF4A260-6EB1-43D5-B1BC-CBA5D79C09D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AF4A260-6EB1-43D5-B1BC-CBA5D79C09D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
